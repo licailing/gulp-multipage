@@ -1,1 +1,210 @@
-html{background: #000;}
+@import "a";
+html {
+    background: #000;
+}
+
+// list 數組
+$linkColor: #000 #fff !default;
+a {
+    color: nth($linkColor, 1);
+    &:hover {
+        color: nth($linkColor, 2);
+    }
+}
+
+//map 對象
+$heading:(h1:2em, h2:1.5em, h3:1.2em);
+@each $header,
+$size in $heading {
+    #{$header} {
+        font-size: $size;
+    }
+}
+
+//属性嵌套
+.parent {
+    color: red;
+    .child {
+        width: 200px;
+    }
+}
+
+//单个选择器跳出属性嵌套
+.parent {
+    color: red;
+    @at-root .child {
+        width: 200px;
+    }
+}
+
+//多个选择器跳出属性嵌套
+.parent {
+    color: red;
+    @at-root {
+        .child1 {
+            width: 200px;
+        }
+        .child2 {
+            width: 300px;
+        }
+    }
+}
+
+
+/* mixin 混合 带参数建议使用mixin混合，不带参数建议使用% */
+
+//mixin 混合(不带参数)
+@mixin center-block {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.demo {
+    @include center-block;
+}
+
+//mixin 混合(带参数)
+@mixin center-block($arg1, $arg2) {
+    margin-left: $arg1;
+    margin-right: $arg2;
+}
+
+.demo {
+    @include center-block('1px', '2px');
+}
+
+//mixin 混合(带默认参数)
+@mixin opacity($opacity: 50) {
+    opacity: $opacity /100;
+    filter: alpha(opacity=$opacity);
+}
+
+.opacity {
+    @include opacity; //使用默认值
+}
+
+.opacity-80 {
+    @include opacity(80);
+}
+
+//mixin 混合(多个参数)
+@mixin horizontal-line($border:1px solid red, $padding:10px) {
+    border-bottom: $border;
+    padding-top: $padding;
+    padding-bottom: $padding;
+}
+
+.imgtext-h li {
+    @include horizontal-line(2px solid green, 20px);
+}
+
+.imgtext-h-product li {
+    @include horizontal-line($padding: 40px);
+}
+
+//mixin 混合(一个参数多组值)
+@mixin box-shadow($shadow...) {
+    box-shadow: $shadow;
+}
+
+.box {
+    @include box-shadow(0 0 6px red, 1px 0 6px yellow, 0 -2px 6px green);
+}
+
+
+/* \mixin 混合 */
+
+//content 解决css3的@media
+@mixin max-screen($res) {
+    @media only screen and (max-width: $res) {
+        @content;
+    }
+}
+
+@include max-screen(480px) {
+    body {
+        color: red;
+    }
+}
+
+//extend 继承
+h1 {
+    border: 1px solid red;
+}
+
+.speaker {
+    @extend h1;
+    border-width: 2px;
+}
+
+.speaker-1 {
+    @extend .speaker;
+    border-width: 3px;
+}
+
+//站位选择器% 如果不调用则不会被编译
+$lte7: true !default;
+%hide {
+    display: none;
+}
+
+%show {
+    display: block;
+}
+
+%clearfix {
+    @if $lte7 {
+        *zoom: 1;
+    }
+    &:before,
+    &:after {
+        content: "";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+%inline-block {
+    display: inline-block;
+    @if $lte7 {
+        *display: inline;
+        *zoom: 1;
+    }
+}
+
+.main .container {
+    @extend %clearfix;
+}
+
+.list {
+    @extend %clearfix;
+    @extend %hide;
+}
+
+.list a {
+    @extend %inline-block;
+}
+
+
+/*function 函数*/
+
+$baseFontSize: 10px !default;
+$gray: #ccc !default;
+@function pxToRem($px) {
+    @return $px / $baseFontSize * 1rem;
+}
+
+body {
+    font-size: $baseFontSize;
+    color: lighten($gray, 10%); //lighten($color,$amount) color变浅10%
+}
+
+.test {
+    font-size: pxToRem(16px);
+    color: darken($gray, 10%); //darken($color,$amount) color加深10%
+}
+
+
+/*\函数*/

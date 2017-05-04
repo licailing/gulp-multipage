@@ -49,7 +49,7 @@ module.exports = {
       .pipe(autoprefixer()) //- 添加兼容性前缀
       // .pipe(px2rem({remUnit: 75}))
       // .pipe(base64({extensions: [/\.(jpg|png)#base64/i]}))  //后缀为#base64的小于32k的图片会被转为base64
-      .pipe(cssnano()) //-压缩css
+      // .pipe(cssnano()) //-压缩css
       .pipe(rename(_cssDistName))  //重命名css
       .pipe(gulpif( gulpEnv!="dev" , rev() ))
       .pipe(gulp.dest(_cssDistDir)) //- 处理得到的css文件发布到对应目录
